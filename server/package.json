@@ -1,0 +1,61 @@
+{
+  "name": "it-asset-dpp-server",
+  "version": "1.1.0",
+  "description": "IT Asset Digital Product Passport API (Express, MongoDB, RBAC, SHA-256 hash chain)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "create-admin": "node scripts/createAdmin.js",
+    "seed:dev": "node scripts/seedData.js",
+    "test": "jest --runInBand",
+    "test:integration": "jest --config jest.integration.config.js --runInBand",
+    "ledger:diagnose": "node scripts/diagnoseLedger.js",
+    "demo:accounts": "node scripts/demoAccounts.js",
+    "demo:assets": "node scripts/demoAssets.js",
+    "import:assets": "node scripts/importAssets.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.3",
+    "express-rate-limit": "^8.7.1",
+    "helmet": "^7.2.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^8.24.6",
+    "morgan": "^1.12.1",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "jest": "^29.7.0",
+    "mingo": "^6.7.2",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.3.1"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "<rootDir>/tests/**/*.test.js"
+    ],
+    "setupFiles": [
+      "<rootDir>/tests/support/env.js"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/support/setupApi.js"
+    ],
+    "testTimeout": 20000,
+    "collectCoverageFrom": [
+      "services/**/*.js",
+      "middleware/**/*.js",
+      "controllers/**/*.js",
+      "utils/**/*.js",
+      "config/env.js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/tests/integration/"
+    ]
+  }
+}

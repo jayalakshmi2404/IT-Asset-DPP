@@ -1,0 +1,4 @@
+assetId,name,category,brand,model,serialNumber,purchaseDate,purchaseCost,warranty,status,department,location,description
+AST-0001,Dell Latitude 7450 - Finance laptop,Laptop,Dell,Latitude 7450,SN-EXAMPLE-0001,2024-03-18,1450,3 Years On-site Support,ACTIVE,Finance,Headquarters - Floor 2,Example row: replace with your own asset
+AST-0002,Cisco Catalyst 9300 switch,Networking,Cisco,Catalyst 9300,SN-EXAMPLE-0002,2023-11-02,4200,5 Years Enterprise Support,ACTIVE,IT Operations,Server Room A,Example row: replace with your own asset
+AST-0003,"Monitor, 27 inch",Monitor,LG,UltraFine 27,SN-EXAMPLE-0003,2025-01-15,310,1 Year Standard Warranty,ACTIVE,IT Operations,Headquarters - Floor 1,"Example row: the name contains a comma, so it is quoted"

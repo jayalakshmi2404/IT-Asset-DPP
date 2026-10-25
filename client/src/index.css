@@ -1,0 +1,179 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #050918;
+  color: #e8ecf6;
+}
+
+:focus-visible {
+  outline: 2px solid #22d3ee;
+  outline-offset: 2px;
+}
+
+@layer components {
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+  .badge-active {
+    @apply bg-emerald-500/15 text-emerald-300 ring-1 ring-inset ring-emerald-400/30;
+  }
+  .badge-maintenance {
+    @apply bg-amber-500/15 text-amber-300 ring-1 ring-inset ring-amber-400/30;
+  }
+  .badge-disposed {
+    @apply bg-rose-500/15 text-rose-300 ring-1 ring-inset ring-rose-400/30;
+  }
+  .badge-transferred {
+    @apply bg-sky-500/15 text-sky-300 ring-1 ring-inset ring-sky-400/30;
+  }
+  .badge-green {
+    @apply bg-emerald-500/15 text-emerald-300 ring-1 ring-inset ring-emerald-400/30;
+  }
+  .badge-rose {
+    @apply bg-rose-500/15 text-rose-300 ring-1 ring-inset ring-rose-400/30;
+  }
+  .badge-slate {
+    @apply bg-white/[0.06] text-ink-400 ring-1 ring-inset ring-white/10;
+  }
+  .badge-amber {
+    @apply bg-amber-500/15 text-amber-300 ring-1 ring-inset ring-amber-400/30;
+  }
+  .badge-blue {
+    @apply bg-brand-500/15 text-brand-300 ring-1 ring-inset ring-brand-400/30;
+  }
+  .card {
+    @apply rounded-2xl border border-white/[0.05] bg-surface/95 shadow-card;
+  }
+  .card-glow {
+    @apply card border-brand-500/30 shadow-glow;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-brand-600 text-white shadow-[0_0_0_1px_rgba(96,139,250,0.4)] hover:bg-brand-500;
+  }
+  .btn-secondary {
+    @apply btn bg-ink-100 text-ink-800 ring-1 ring-inset ring-ink-300 hover:bg-ink-200;
+  }
+  .btn-danger {
+    @apply btn bg-rose-600 text-white hover:bg-rose-500;
+  }
+  .input {
+    @apply w-full rounded-lg border border-ink-300 bg-ink-50/70 px-3 py-2 text-sm text-ink-900 placeholder:text-ink-400 focus:border-cyan-glow focus:outline-none focus:ring-2 focus:ring-cyan-glow/25 disabled:opacity-60;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-ink-600;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #101a2f 25%, #1b2742 37%, #101a2f 63%);
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+/* Atmosphere: soft radial light in place of the old background grid. No lines, no patterns. */
+.app-atmosphere {
+  background-color: #050918;
+  background-image:
+    radial-gradient(900px 520px at 12% -8%, rgba(59, 102, 245, 0.14), transparent 70%),
+    radial-gradient(700px 480px at 96% 0%, rgba(34, 211, 238, 0.07), transparent 70%),
+    radial-gradient(800px 600px at 60% 110%, rgba(139, 92, 246, 0.08), transparent 70%);
+}
+
+/* Hero bloom used behind the dashboard greeting. */
+.hero-bloom {
+  background:
+    radial-gradient(520px 220px at 0% 0%, rgba(59, 102, 245, 0.18), transparent 70%),
+    radial-gradient(380px 200px at 100% 100%, rgba(139, 92, 246, 0.12), transparent 70%);
+}
+
+/* Lift on hover: transform and shadow only, so it stays GPU-friendly. */
+.lift {
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), border-color 240ms ease;
+}
+.lift:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Staggered entrance for grids of cards (KPI tiles). Each child rises slightly after the previous one. */
+.stagger-children > * {
+  animation: rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.stagger-children > *:nth-child(2) { animation-delay: 60ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 120ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 180ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 240ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 300ms; }
+
+.animate-rise {
+  animation: rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stagger-children > *,
+  .animate-rise {
+    animation: none;
+  }
+  .lift:hover {
+    transform: none;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
