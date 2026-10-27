@@ -9,7 +9,7 @@ describe('Permission matrix (single source of truth)', () => {
     const summary = Object.fromEntries(ROLES.map((r) => [r, [...ROLE_PERMISSIONS[r]].sort()]));
     expect(summary).toEqual({
       ADMIN: [
-        'assets:read', 'assets:write', 'audit:read', 'departments:manage', 'departments:read', 'integrity:full-chain',
+        'anchor:read', 'anchor:write', 'assets:read', 'assets:write', 'audit:read', 'departments:manage', 'departments:read', 'integrity:full-chain',
         'integrity:verify', 'lifecycle:allocate', 'lifecycle:dispose', 'lifecycle:read', 'profile:read', 'profile:write',
         'qr:issue', 'reports:global', 'reports:scoped', 'users:assignable', 'users:manage',
       ],
@@ -19,7 +19,7 @@ describe('Permission matrix (single source of truth)', () => {
       ],
       EMPLOYEE: ['assets:read', 'lifecycle:read', 'profile:read', 'profile:write'],
       AUDITOR: [
-        'assets:read', 'audit:read', 'departments:read', 'integrity:full-chain', 'integrity:verify', 'lifecycle:read',
+        'anchor:read', 'assets:read', 'audit:read', 'departments:read', 'integrity:full-chain', 'integrity:verify', 'lifecycle:read',
         'profile:read', 'profile:write', 'reports:global', 'reports:scoped',
       ],
     });

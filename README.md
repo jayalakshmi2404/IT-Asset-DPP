@@ -4,6 +4,14 @@ A web application for registering IT assets, recording their lifecycle (allocati
 
 The hash chain is a centralised, append-only ledger: each entry stores the SHA-256 hash of its data and of the previous entry. Changing any stored record breaks the chain and the verification reports it. It is **not** a blockchain and has no distributed consensus.
 
+The latest block hash can optionally be **anchored** outside the database. Anchoring has three modes, set by `ANCHOR_PROVIDER`:
+
+- `none` (default): anchoring is off.
+- `mock`: a **free, offline simulation** for demonstrations and tests. Nothing is sent anywhere, and every result is labelled MOCK / SIMULATED. It is **not blockchain proof**.
+- `ethereum`: real transactions on the Ethereum Sepolia **test** network. This is a separate, optional mode that needs an RPC URL and a test-wallet key.
+
+Anchoring covers only anchored blocks and does not make the ledger tamper-proof. The design, the verification states and the public trust view are in **[docs/BLOCKCHAIN-TRUST.md](docs/BLOCKCHAIN-TRUST.md)**. The configuration reference is in [docs/ANCHORING.md](docs/ANCHORING.md). For the free demo, see [the mock demo](#free-blockchain-anchoring-demo-mock-mode) below.
+
 ## Contents
 
 - `server/`: Express 4 API, Mongoose 8 models, MongoDB ledger, Jest tests
@@ -67,6 +75,84 @@ Demo accounts (all use `@example.test` addresses):
 | Employee | `employee.b@example.test` | Finance |
 | Auditor | `auditor@example.test` | Read-only oversight |
 | Inactive | `inactive@example.test` | Deactivated; sign-in is refused |
+
+## Free blockchain anchoring demo (mock mode)
+
+This section shows the anchoring workflow with **no blockchain account, no wallet, no private key and no paid service**. You only need the same MongoDB database the app already uses (a free MongoDB Atlas M0 cluster is enough; see [docs/ATLAS_SETUP.md](docs/ATLAS_SETUP.md)).
+
+**What mock mode is:** a simulation. "Anchoring" stores a record in this application's own database, labelled MOCK / SIMULATED. It shows the same checks a real anchor would need, and it can detect a changed record. It is **not** blockchain proof: anyone with database access could change it, and no independent party saw it.
+
+**What is still the source of integrity:** the centralised hash chain in the `hashblocks` collection. Every asset event is added to it, and the integrity checks use it. Anchoring is an extra layer on top, and it is not needed for the hash chain to work.
+
+**Real Sepolia anchoring** is a separate, optional mode (`ANCHOR_PROVIDER=ethereum`). It needs an RPC URL from a provider such as Alchemy and a private key for a test wallet you create yourself. Alchemy is only the connection to the network. It does not give you a wallet or a key. Leave it off unless you specifically want to try it.
+
+### 1. Configure (beginner steps)
+
+From the project folder:
+
+```bash
+cd server
+cp .env.example .env
+```
+
+Open `server/.env` in any text editor and set these two lines (the rest can stay as they are):
+
+```bash
+MONGODB_URI=mongodb+srv://<your-db-user>:<your-password>@<your-cluster-host>/it_asset_dpp?retryWrites=true&w=majority
+JWT_SECRET=<a random string of at least 32 characters>
+ANCHOR_PROVIDER=mock
+```
+
+- `MONGODB_URI`: your own database connection string. Keep the `<...>` placeholders out; the server refuses to start if they remain.
+- `JWT_SECRET`: generate one with `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`.
+- `ANCHOR_PROVIDER=mock`: no RPC URL, private key or chain ID is needed.
+
+Do not put any real wallet key in `.env` for this demo. Mock mode does not use one.
+
+### 2. Start and create the first administrator
+
+```bash
+cd server
+npm install
+npm run create-admin -- "Ada Admin" admin@yourcompany.test "a-strong-password"
+npm start                       # API on http://localhost:5000
+```
+
+In a second terminal:
+
+```bash
+cd client
+npm install
+npm run dev                     # web app on http://localhost:5173
+```
+
+Optionally, load demo assets so there is a ledger to anchor: `cd server && npm run seed:dev`.
+
+### 3. Demo steps
+
+1. Open http://localhost:5173 and sign in as the administrator.
+2. Open the **Integrity** page (http://localhost:5173/integrity). Find the **External anchor** panel.
+3. The badge reads **Mock Mode — Simulated, No Real Blockchain** and every row carries a **MOCK / SIMULATED** tag.
+4. Click **Simulate anchor (latest block)**. The success message says it is not a blockchain transaction. The table shows the block number, block hash, the `MOCK-SIM-…` reference, the timestamp and the status.
+5. Click **Refresh status**, then **Re-check**. The status becomes **VERIFIED** when the record matches the ledger.
+6. Optional tamper test: stop the server, open the `mockanchortxes` collection in MongoDB Atlas, and edit the `payload` of the anchor so its block hash differs. Start the server and click **Re-check**. The status becomes **VIOLATION_DETECTED** and the reason is shown. Undo the edit afterwards, or delete that document, to restore a clean demo.
+7. Optional auditor check: `cd server && npm run demo:accounts -- --yes` creates the demo accounts and prints a generated password for each once (without `--yes` it only previews). Sign in as `auditor@example.test`. The auditor can view and re-check the panel but has no anchor buttons.
+
+### 4. Test commands
+
+```bash
+cd server && npm test           # all server tests (in-memory; no database needed)
+cd client && npm test           # client tests (Vitest)
+cd client && npm run build      # production build
+```
+
+The mock tests cover: starting without RPC or key, simulated anchoring, verification, mismatch detection, admin-only writes, auditor read-only access, disabled behaviour, Ethereum configuration validation, and no private-key or RPC-URL leakage in responses or errors.
+
+### 5. Render deployment
+
+Mock mode needs no extra variables or paid services. On Render, set `ANCHOR_PROVIDER=mock` (or leave it unset to keep anchoring off). Do not set `ANCHOR_PRIVATE_KEY` for mock mode.
+
+The full steps, the variables for each mode (`none`, `mock`, `ethereum` on Sepolia), and the free-tier limits are in **[docs/BLOCKCHAIN-TRUST.md](docs/BLOCKCHAIN-TRUST.md)**. The project has no `render.yaml`; service names and commands stay as you configured them.
 
 ## Demo accounts, demo assets, import and export
 
@@ -159,6 +245,8 @@ See **[docs/LEDGER_INTEGRITY.md](docs/LEDGER_INTEGRITY.md)** for the canonical h
 
 ## Known limitations
 
+- Mock anchoring is a simulation stored in this application's own database. It is not blockchain proof and gives no independent evidence.
+- Real Ethereum Sepolia anchoring has been covered only by fake-based unit tests. It has not been run against a live endpoint in this project.
 - Atlas itself was not tested here (no Atlas credentials were available). The real-MongoDB suite was run against a local replica set. Run it against your Atlas test database before relying on Atlas (see docs/TESTING.md).
 - The ledger verifier loads the full ledger into memory. That is fine for thousands of records, but a very large ledger needs a paged verifier.
 - Migrating local data and repairing a legacy record are manual, approval-based steps (docs/LEDGER_INTEGRITY.md). There is no automatic migration tool.

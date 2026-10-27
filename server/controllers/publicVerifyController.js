@@ -1,5 +1,8 @@
 const Asset = require('../models/Asset');
 const LifecycleEvent = require('../models/LifecycleEvent');
+const HashBlock = require('../models/HashBlock');
+const AnchorRecord = require('../models/AnchorRecord');
+const { publicAnchorSummary, coverageForEvents } = require('../services/anchoring/trust');
 const { AppError } = require('../middleware/errorHandler');
 const { verifyAssetChain } = require('../services/verification/verifyChain');
 const { logAction } = require('../services/audit/auditLogger');
@@ -14,10 +17,13 @@ function publicDescription(event) {
 }
 
 async function buildPublicResult(asset) {
-  const [events, integrity] = await Promise.all([
+  const [events, integrity, anchoring] = await Promise.all([
     LifecycleEvent.find({ asset: asset._id }).sort({ timestamp: 1 }).lean(),
     verifyAssetChain(asset.assetId),
+    publicAnchorSummary({ HashBlock, AnchorRecord }),
   ]);
+  // Local database only: no RPC call happens on a public page load.
+  const coverage = await coverageForEvents(events, { HashBlock, AnchorRecord });
 
   return {
     status: integrity.status,
@@ -34,12 +40,15 @@ async function buildPublicResult(asset) {
     totalEvents: events.length,
     chainStatus: integrity.verified ? 'VERIFIED' : 'VIOLATION_DETECTED',
     violations: integrity.violations.map((v) => ({ eventType: v.eventType, reason: v.reason })),
-    lifecycle: events.map((e) => ({
+    lifecycle: events.map((e, i) => ({
       eventType: e.eventType,
       description: publicDescription(e),
       timestamp: e.timestamp,
       currentHash: e.currentHash,
+      blockIndex: e.blockIndex,
+      anchor: coverage[i],
     })),
+    anchoring,
     checkedAt: integrity.checkedAt,
     footer: integrity.verified
       ? 'Every lifecycle record matches its SHA-256 hash-chain entry.'

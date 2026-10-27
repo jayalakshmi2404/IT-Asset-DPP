@@ -1,27 +1,8 @@
-
-# Dependencies
 node_modules/
-
-# Environment variables and secrets
 .env
-.env.*
-!.env.example
-!.env.sample
-
-# Build output
+.env.local
 dist/
 build/
-.svelte-kit/
-.vercel/
-
-# Logs and test output
 *.log
-coverage/
-
-# Operating system files
 .DS_Store
-Thumbs.db
-
-# Private keys
-*.pem
-*.key
+coverage/

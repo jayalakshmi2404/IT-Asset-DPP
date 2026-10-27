@@ -18,7 +18,7 @@ const mongoose = require('mongoose');
 
 const { ObjectId } = mongoose.Types;
 
-const COLLECTIONS = ['User', 'Department', 'Asset', 'LifecycleEvent', 'HashBlock', 'AuditLog'];
+const COLLECTIONS = ['User', 'Department', 'Asset', 'LifecycleEvent', 'HashBlock', 'AuditLog', 'AnchorRecord', 'MockAnchorTx'];
 
 const store = Object.fromEntries(COLLECTIONS.map((n) => [n, []]));
 

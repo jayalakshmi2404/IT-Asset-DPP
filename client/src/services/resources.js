@@ -30,6 +30,12 @@ export const integrityApi = {
   fullChain: () => api.get('/integrity/full-chain'),
 };
 
+export const anchorApi = {
+  list: () => api.get('/anchors'),
+  create: () => api.post('/anchors'),
+  refresh: () => api.post('/anchors/refresh'),
+};
+
 export const publicVerifyApi = {
   byDppId: (dppId) => api.get(`/verify/${encodeURIComponent(dppId)}`),
   byAssetId: (assetId) => api.get(`/verify/asset/${encodeURIComponent(assetId)}`),

@@ -30,6 +30,8 @@ const PERMISSIONS = Object.freeze({
   DEPARTMENTS_MANAGE: 'departments:manage', // create/update departments
   PROFILE_READ: 'profile:read', // read own profile
   PROFILE_WRITE: 'profile:write', // change own password
+  ANCHOR_READ: 'anchor:read', // view external anchor status and verify anchors
+  ANCHOR_WRITE: 'anchor:write', // submit anchor transactions (administrators only)
 });
 
 const P = PERMISSIONS;
@@ -53,6 +55,8 @@ const ROLE_PERMISSIONS = Object.freeze({
     P.DEPARTMENTS_MANAGE,
     P.PROFILE_READ,
     P.PROFILE_WRITE,
+    P.ANCHOR_READ,
+    P.ANCHOR_WRITE,
   ]),
   MANAGER: Object.freeze([
     P.ASSETS_READ,
@@ -78,6 +82,7 @@ const ROLE_PERMISSIONS = Object.freeze({
     P.DEPARTMENTS_READ,
     P.PROFILE_READ,
     P.PROFILE_WRITE,
+    P.ANCHOR_READ,
   ]),
 });
 

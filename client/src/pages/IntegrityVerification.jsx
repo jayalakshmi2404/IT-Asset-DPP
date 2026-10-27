@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PageHeader from '../components/common/PageHeader';
 import IntegrityStatus from '../components/dashboard/IntegrityStatus';
 import ViolationList from '../components/verification/ViolationList';
+import AnchorPanel from '../components/verification/AnchorPanel';
 import Icon from '../components/common/Icon';
 import { integrityApi, assetApi } from '../services/resources';
 import { apiErrorMessage } from '../services/api';
@@ -92,6 +93,8 @@ export default function IntegrityVerification() {
           </div>
         </SectionCard>
       </div>
+
+      <AnchorPanel user={user} />
     </div>
   );
 }

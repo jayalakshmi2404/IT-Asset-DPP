@@ -21,6 +21,7 @@ const departmentRoutes = require('./routes/department.routes');
 const auditRoutes = require('./routes/audit.routes');
 const reportRoutes = require('./routes/report.routes');
 const healthRoutes = require('./routes/health.routes');
+const anchorRoutes = require('./routes/anchor.routes');
 
 const isTest = process.env.NODE_ENV === 'test';
 const app = express();
@@ -57,6 +58,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/departments', departmentRoutes);
 app.use('/api/audit-logs', auditRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/anchors', anchorRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

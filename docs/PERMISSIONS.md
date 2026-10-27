@@ -12,6 +12,8 @@ Generated from `server/services/access/permissions.js`. Changing a role needs a 
 | `qr:issue` | yes | yes | no | no |
 | `integrity:verify` | yes | yes | no | yes |
 | `integrity:full-chain` | yes | no | no | yes |
+| `anchor:read` | yes | no | no | yes |
+| `anchor:write` | yes | no | no | no |
 | `reports:scoped` | yes | yes | no | yes |
 | `reports:global` | yes | no | no | yes |
 | `audit:read` | yes | no | no | yes |
